@@ -12,42 +12,48 @@
     <% end %>
   </div>
 </div>
+
+ 
+
+</div>
+
 <br>
 <h2>Tweets</h2>
 
-<% if current_user.follow true %>
-  <table class="table my-3 ">
-    <thead class="thead-light">
+
+<table class="table my-3 ">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col"><p class= "text-center">Image</p></th>
+      <th scope="col"><p class= "text-center">Author</p></th>
+      <th scope="col"><p class= "text-center">Content</p></th>
+      <th scope="col"><i class="fas fa-thumbs-up fa-x"></i></th>
+      <th scope="col"><i class="fas fa-thumbs-down fa-x"></i></th>
+      <th scope="col"><i class="fas fa-retweet"></i></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tweets.each do |tweet| %>
       <tr>
-        <th scope="col"><p class= "text-center">Image</p></th>
-        <th scope="col"><p class= "text-center">Author</p></th>
-        <th scope="col"><p class= "text-center">Content</p></th>
-        <th scope="col"><i class="fas fa-thumbs-up fa-x"></i></th>
-        <th scope="col"><i class="fas fa-thumbs-down fa-x"></i></th>
-        <th scope="col"><i class="fas fa-retweet"></i></th>
+        <td><img class="card-img-top my-3  text-center" src=<%= tweet.user.profile_photo %> class="rounded-circle"></td>
+        
+        <div class="container my-3 text-center">
+          <td><p class= "my-5 text-center "> <%= tweet.user %></p></td>
+          <td><p class= "my-5 text-center "> <%= tweet.content %></p></td>
+          <td><p class= "my-5 text-center "> <%= tweet.get_upvotes.size %></p></td>
+          <td><p class= "my-5 text-center "> <%= tweet.get_downvotes.size %></p></td>
+          <td><p class= "my-5 text-center "> <%= tweet.share %></p></td>
+          <td><button type="button" class=" text-center my-5 btn btn-info"><%= link_to 'Show', tweet %></button></td>
+        <% if current_user.id == tweet.user_id %>
+          <td><button type="button" class="text-center my-5 btn btn-warning"><%= link_to 'Edit', edit_tweet_path(tweet) %></button></td>
+          <td><button type="button" class=" text-center my-5 btn btn-danger"><%= link_to 'destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' } %></button></td>
+        <% end %>
+        </div>
       </tr>
-    </thead>
-    <tbody>
-      <% @tweets.each do |tweet| %>
-        <tr>
-          <td><img class="card-img-top my-3  text-center" src=<%= tweet.user.profile_photo %> width="80" height="120" class="round-circle mb-2"></td>
-          <div class="container my-3 text-center">
-            <td><p class= "my-5 text-center "> <%= tweet.user %></p></td>
-            <td><p class= "my-5 text-center "> <%= tweet.content %></p></td>
-            <td><p class= "my-5 text-center "> <%= tweet.get_upvotes.size %></p></td>
-            <td><p class= "my-5 text-center "> <%= tweet.get_downvotes.size %></p></td>
-            <td><p class= "my-5 text-center "> <%= tweet.share %></p></td>
-            <td><button type="button" class=" text-center my-5 btn btn-info"><%= link_to 'Show', tweet %></button></td>
-          <% if current_user.id == tweet.user_id %>
-            <td><button type="button" class="text-center my-5 btn btn-warning"><%= link_to 'Edit', edit_tweet_path(tweet) %></button></td>
-            <td><button type="button" class=" text-center my-5 btn btn-danger"><%= link_to 'destroy', tweet, method: :delete, data: { confirm: 'Are you sure?' } %></button></td>
-          <% end %>
-          </div>
-        </tr>
-      <% end %>
-    </thead>
-  </table>
-<% end %>
+    <% end %>
+  </thead>
+</table>
+
 <br>
 
-<%= will_paginate @tweets %>
+<%= will_paginate @tweets, :previous_label => '', :next_label => ' view more tweets' %>

@@ -15,7 +15,7 @@
     </thead>
     <tbody>
       <tr>
-        <% if @tweet.user_id  !=  @tweet.origin %>
+        <% if @tweet.user_id  ==  @tweet.origin %>
           <th><%= @tweet.origin %><th>
         <% else %>
           <th> "original" <th>
@@ -27,19 +27,17 @@
     </tbody>
   </table>
   <div class= container>
-    <%= link_to like_tweet_path(tweet), method: :put do %>
+    <%= link_to like_tweet_path(@tweet), method: :put do %>
       <i class="fas fa-thumbs-up fa-x"></i>
-      <%= tweet.get_upvotes.size %>
+      <%= @tweet.get_upvotes.size %>
     <% end %>
-
-    <%= link_to dislike_tweet_path(tweet), method: :put do %>
+    <%= link_to dislike_tweet_path(@tweet), method: :put do %>
       <i class="fas fa-thumbs-down fa-x"></i>
-      <%= tweet.get_downvotes.size %>
+      <%= @tweet.get_downvotes.size %>
     <% end %>
-
-    <%= link_to   tweet_retweet_path(tweet), method: :post do  %>
+    <%= link_to   tweet_retweet_path(@tweet), method: :post do  %>
       <i class="fas fa-retweet"></i>
-      <%= tweet.share%>
+      <%= @tweet.share%>
     <% end %>
   </div>
 
@@ -51,7 +49,6 @@
       <button class="dropdown-item" type="button">
         <% @tweet.get_upvotes.voters.each do |voter| %>
           <%= voter.username %>  
-
         <% end%>    
       </button>
     </div>
@@ -65,7 +62,6 @@
       <button class="dropdown-item" type="button">
         <% @tweet.get_downvotes.voters.each do |voter| %>
           <%= voter.username %>  
-
         <% end%>    
       </button>
     </div>
@@ -74,5 +70,3 @@
   <%= link_to 'Edit', edit_tweet_path(@tweet) %> |
   <%= link_to 'Back', tweets_path %>
 </div>
-
-

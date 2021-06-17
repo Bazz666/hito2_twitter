@@ -3,29 +3,30 @@
 
 <br>
 <div class= container>
-  <table class="table bg-danger">
-    <thead>
-      <tr>
-        <th scoope="col"> origin :<th>
+  <p>
+    <strong>origin:</strong>
+    <% if @tweet.user_id  !=  @tweet.origin %>
+      <%= @tweet.user %>
+    <% else %>
+        "Propio" 
+    <% end %>
+  </p>
 
-        <th scope="col">Profile_pic:</th>
-        <th scope="col">Author:</th>
-        <th scope="col">Content:</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <% if @tweet.user_id  ==  @tweet.origin %>
-          <th><%= @tweet.origin %><th>
-        <% else %>
-          <th> "original" <th>
-        <% end %>
-        <th> <img src="<%= @tweet.user.profile_photo %>" width="80" height="80" class="round-circle mb-3" ></th>
-        <th> <%= @tweet.user %> </th>
-        <th> <%= @tweet.content %> </th>
-      </tr>
-    </tbody>
-  </table>
+  <p>
+    <strong>Photo:</strong>
+    <img src="<%= @tweet.user.profile_photo %>"width="60" height="60" class="rounded-circle mb-2">
+  </p>
+
+  <p>
+    <strong>Name:</strong>
+    <%= @tweet.user %>
+  </p>
+
+  <p>
+    <strong>Content:</strong>
+    <%= @tweet.content %>
+  </p>
+
   <div class= container>
     <%= link_to like_tweet_path(@tweet), method: :put do %>
       <i class="fas fa-thumbs-up fa-x"></i>

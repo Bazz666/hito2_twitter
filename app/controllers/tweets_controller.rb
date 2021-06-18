@@ -76,6 +76,20 @@ class TweetsController < ApplicationController
     
     @tweet.user_id = current_user.id
 
+    @tweet.content = @tweet.content.split(" ").map(&:to_s)
+    @content = JSON.parse(@tweet.content)
+    @content.each do |hash|
+      if hash.include?('#')
+        @name_link = hash.remove("#")
+        @new_link = "https://es.wikipedia.org/wiki/#{@name_link}"
+        @content[@content.index(hash)] = @new_link
+        @tweet.content = @content.join(' ')
+      else
+        @new_content = @content.join(' ')
+        @tweet.content = @new_content
+      end     
+    end
+
     respond_to do |format|
       if @tweet.save
         format.html { redirect_to @tweet, notice: "Tweet was successfully created." }

@@ -20,7 +20,7 @@ ActiveAdmin.register User do
       post.tweets.count
     end
     column "Follows" do |post|
-      post.tweets.count
+      post.friends.count
     end
     
     actions

@@ -7,9 +7,7 @@ class Tweet < ApplicationRecord
   has_many :retweets ,dependent: :destroy
   #delegate :profile_photo, to: :user, prefix: :true
   
-  def to_s
-    username
-  end
+ 
   
 
   def share

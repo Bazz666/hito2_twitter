@@ -1,12 +1,15 @@
 Rails.application.routes.draw do
   
+  
   devise_for :users, controllers: {
     sessions: 'users/sessions'
   }
   devise_scope :user do
     get '/users/sign_out' => 'devise/sessions#destroy'
+    post 'follow/:id', to: 'friends#follow' , as:'follow_user'
+    delete 'unfollow/:friend_id', to: 'friends#unfollow', as:'unfollow_user'
     
-  end
+  end 
 
   resources :tweets do 
     post 'retweet', to: "tweets#retweet"
@@ -16,6 +19,11 @@ Rails.application.routes.draw do
     end
   end
 
+
+  
+
+
+  get 'users/show', to: 'users#show'
   root 'tweets#index'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

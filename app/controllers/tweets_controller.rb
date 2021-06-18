@@ -44,13 +44,18 @@ class TweetsController < ApplicationController
     @tweets = Tweet.paginate(page: params[:page], per_page: 5)
     @likes = Like.all
     @retweets= Retweet.all
+    @users=User.all
   end
+
 
   # GET /tweets/1 or /tweets/1.json
   def show
-    @users = User.pluck :profile_photo, :id, :username,:profile_photo
-    
-    #@user=User.find(params[:id])
+    @users = []
+    @tweet = Tweet.find(params[:id])
+    @tweet.likes.each do |like|
+      @users.push(User.find(like.user_id))
+    end
+    return @tweet, @users
   end
 
   # GET /tweets/new
@@ -111,7 +116,7 @@ class TweetsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_tweet
-      @tweet = Tweet.find(params[:tweet_id])
+      @tweet = Tweet.find(params[:id])
     end
 
     # Only allow a list of trusted parameters through.

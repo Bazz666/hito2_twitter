@@ -1,5 +1,5 @@
 class TweetsController < ApplicationController
-  before_action :set_tweet, only: %i[ show edit update destroy retweet]
+  before_action :set_tweet, only: %i[ show edit update destroy retweets]
   before_action :authenticate_user!, exept: :index
   skip_before_action :verify_authenticity_token, :only => [:index, :show,:new ]
   # GET /tweets or /tweets.json
@@ -132,9 +132,10 @@ class TweetsController < ApplicationController
     def set_tweet
       @tweet = Tweet.find(params[:id])
     end
+    
 
     # Only allow a list of trusted parameters through.
     def tweet_params
-      params.require(:tweet).permit(:content, :user_id, :tweet_id ,:tweet, :retweet ,:origin, user_attributes: [:username , :profile_photo])
+      params.require(:tweet).permit(:content, :retweet ,:origin, user_attributes: [:username , :profile_photo])
     end
 end

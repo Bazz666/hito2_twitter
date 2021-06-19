@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_18_041931) do
+ActiveRecord::Schema.define(version: 2021_06_18_073457) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,14 +41,6 @@ ActiveRecord::Schema.define(version: 2021_06_18_041931) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
-  create_table "friends", force: :cascade do |t|
-    t.integer "friend_id"
-    t.bigint "user_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_friends_on_user_id"
-  end
-
   create_table "homes", force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -61,6 +53,16 @@ ActiveRecord::Schema.define(version: 2021_06_18_041931) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["tweet_id"], name: "index_likes_on_tweet_id"
     t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
+  create_table "relationships", force: :cascade do |t|
+    t.integer "follower_id"
+    t.integer "followed_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["followed_id"], name: "index_relationships_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_relationships_on_follower_id_and_followed_id", unique: true
+    t.index ["follower_id"], name: "index_relationships_on_follower_id"
   end
 
   create_table "retweets", force: :cascade do |t|
@@ -109,7 +111,6 @@ ActiveRecord::Schema.define(version: 2021_06_18_041931) do
     t.index ["voter_type", "voter_id"], name: "index_votes_on_voter_type_and_voter_id"
   end
 
-  add_foreign_key "friends", "users"
   add_foreign_key "likes", "tweets"
   add_foreign_key "likes", "users"
   add_foreign_key "retweets", "tweets"

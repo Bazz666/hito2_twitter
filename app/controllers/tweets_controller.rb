@@ -1,10 +1,10 @@
 class TweetsController < ApplicationController
   before_action :set_tweet, only: %i[ show edit update destroy retweets]
-  before_action :authenticate_user!, exept: :index
+  before_action :authenticate_user!, exept: [:index,:show]
   skip_before_action :verify_authenticity_token, :only => [:index, :show,:new ]
   # GET /tweets or /tweets.json
 
-  
+ 
 
   def upvote 
     @tweet = Tweet.find(params[:id])
@@ -41,10 +41,28 @@ class TweetsController < ApplicationController
 
 
   def index
-    @tweets = Tweet.paginate(page: params[:page], per_page: 5)
-    @likes = Like.all
-    @retweets= Retweet.all
-    @users=User.all
+    @q = Tweet.ransack(params[:q])
+
+    
+    if params[:tweetsearch].present?
+      @tweets = Tweet.search_my_tweets(params[:tweetsearch]).page(params[:page]).order("created_at DESC")
+    elsif params[:hashtag].present?
+      @tweets = Tweet.search_my_tweets("##{params[:hashtag]}").page(params[:page]).order("created_at DESC")
+    end
+
+    if user_signed_in?
+      @tweet = current_user.tweets.build
+      @tweets =@q.result(distinct: true).tweets_for_me(current_user).paginate(page: params[:page], per_page: 5)
+      #@tweets = Tweet.paginate(page: params[:page], per_page: 5)
+     
+      @likes = Like.all
+      @retweet = Retweet.all
+      @tweet = Tweet.new
+    else
+      @tweets=(@q.result(distinct: true)).all
+    end
+    return @tweets, @tweet
+
   end
 
 
@@ -70,37 +88,20 @@ class TweetsController < ApplicationController
   end
 
   # POST /tweets or /tweets.json
-  def create 
-    
+  def create
     @tweet = Tweet.new(tweet_params.merge(user: current_user))
-    
     @tweet.user_id = current_user.id
-
-    @tweet.content = @tweet.content.split(" ").map(&:to_s)
-    @content = JSON.parse(@tweet.content)
-    @content.each do |hash|
-      if hash.include?('#')
-        @name_link = hash.remove("#")
-        @new_link = "https://es.wikipedia.org/wiki/#{@name_link}"
-        @content[@content.index(hash)] = @new_link
-        @tweet.content = @content.join(' ')
-      else
-        @new_content = @content.join(' ')
-        @tweet.content = @new_content
-      end     
-    end
-
     respond_to do |format|
       if @tweet.save
-        format.html { redirect_to @tweet, notice: "Tweet was successfully created." }
+        format.html { redirect_to @tweet, notice: 'Tweet was successfully created.' }
         format.json { render :show, status: :created, location: @tweet }
       else
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { render :new }
         format.json { render json: @tweet.errors, status: :unprocessable_entity }
       end
     end
   end
-
+  
   # PATCH/PUT /tweets/1 or /tweets/1.json
   def update
     if @tweet.user.id == current_user.id

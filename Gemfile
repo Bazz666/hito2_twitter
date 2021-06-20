@@ -25,6 +25,8 @@ gem 'devise'
 gem 'will_paginate', '~> 3.1.0'
 gem 'acts_as_votable', '~> 0.13.1'
 gem 'activeadmin'
+gem 'ransack'
+
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
 

@@ -3,20 +3,49 @@
 <div class="row">
   <div class="col-md-2">
     <% if current_user %>
-        <h2 class="text-primary">
-          <%= flash[:alert] = "Bienvenid@" %> <%=current_user.username%>
-          
-        </h2>
-      <%= link_to 'Create a New Tweet', new_tweet_path, class: "btn btn-info btn-sm" %>
-      <%= link_to 'add new friends', users_show_path, class: "btn btn-info btn-sm my-2" %>
+      <h2 class="text-primary">
+        <%=  "Bienvenid@" %> <%=current_user.username%>
+      </h2>  
     <% end %>
   </div>
 </div>
 
- 
+<% if user_signed_in? %>
+  <div class="col-12 border border-secondary rounded">
+    <article class="media p-2">
+      <div class="align-self-start">
+  
+        <img src="<%= current_user.profile_photo %>" width="60" height="60" class="round-circle mb-2" >
+      
+      </div>
+      <div class="media-body">
+        <div class=" container mt-0">
+          <%= render 'form', tweet: @tweet %>
+        </div>
+      </div>
+    </article>
+  </div>
+<% end %>
+
+
+    
+
+ <%= link_to 'add new friends', users_show_path, class: "btn btn-info btn-sm my-2" %>
 
 <br>
 <h2>Tweets</h2>
+
+<div class = "container d-flex justify-content-left">
+  <div class="col-md-3 offset-md-2">
+     <%= search_form_for @q do |f| %>
+          <div class="form-group">
+            <%= f.label :content_cont, 'Tweet Content', class: 'h4 font-weight-bold'  %>
+            <%= f.search_field :content_cont, class: 'form-control', placeholder: 'Search Content' %>
+          </div>
+          <%= f.submit 'Search', class: 'btn btn-info' %>
+        <% end %>
+  </div>
+</div>
 
 
 
@@ -34,7 +63,20 @@
           <h5 class="card-user pr-8"><%= tweet.user %> .
           <small class="text-muted display-12"><%= link_to time_ago_in_words(tweet.created_at),tweet %></small>
           </h5>
-          <p class="card-text"><%= tweet.content %></p> 
+          
+
+          <p>
+            <% content_tweet_array = tweet.content.split%>
+            <% content_tweet_array.each do |element|%>
+              <% if element.start_with?("#") %>
+                  <% element.slice!(0) %>
+                  <a href="?hashtag=<%= element %>">#<%= element %></a>
+              <% else %>
+              <%= element %>
+              <% end %>
+            <% end %>  
+          </p>  
+
         </div>
         </div>
         <% if user_signed_in? %>

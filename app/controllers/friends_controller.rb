@@ -1,17 +1,22 @@
 class FriendsController < ApplicationController
   before_action :set_friend, only: %i[ show edit update destroy ]
-  before_action :set_user
+ 
  
 
 
   # GET /friends or /friends.json
   def index
+    
     @friends = Friend.all
   end
 
   # GET /friends/1 or /friends/1.json
   def show
-    @friends = Friend.all
+
+    
+    @friends= Friend.all
+    
+    
   end
 
   # GET /friends/new
@@ -23,27 +28,26 @@ class FriendsController < ApplicationController
   def edit
   end
 
-  # POST /friends or /friends.json
   def create
     @friend = Friend.create(user_id: current_user.id, friend_id: params[:user_id])
     redirect_to root_path
   end
 
+  # POST /friends or /friends.json
   def follow
-      
     @followed = User.find(params[:id])
     @friend = Friend.new(user_id: current_user.id, friend_id: @followed.id)
     @friend.save
     redirect_to root_path
-  end
+end
 
-  def unfollow
-      @friend = Friend.find_by(friend_id: params[:id], user_id: current_user)
-      @friend.destroy 
-      redirect_to root_path
-  end
+def unfollow
+    @friend = Friend.find_by(friend_id: params[:id], user_id: current_user)
+    @friend.destroy 
+    redirect_to root_path
+end
 
-  # PATCH/PUT /friends/1 or /friends/1.json
+# PATCH/PUT /friends/1 or /friends/1.json
   def update
     respond_to do |format|
       if @friend.update(friend_params)
@@ -56,21 +60,19 @@ class FriendsController < ApplicationController
     end
   end
 
-  # DELETE /friends/1 or /friends/1.json
-  def destroy
-  end
+
+ 
 
   private
 
     # Use callbacks to share common setup or constraints between actions.
 
-    def set_user
-      @user = User.find(current_user.id)
+   
+    def set_friend
+      @friend = Friend.find_by(user_id: current_user.id, friend_id: params[:friend_id])
     end
 
-    def set_friend
-      @friend = Friend.find(params[:id])
-    end
+  
 
     # Only allow a list of trusted parameters through.
     def friend_params
